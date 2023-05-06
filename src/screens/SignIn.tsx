@@ -9,20 +9,28 @@ import {
 } from 'native-base'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
 import BackgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { useState } from 'react'
 import { Button } from '@components/Button'
+import { AuthNavigatorRoutesProps } from '@routes/auth'
 
 export function SignIn() {
   const [show, setShow] = useState(false)
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  function handleGoSignUp() {
+    navigation.navigate('signUp')
+  }
 
   return (
     <VStack flex={1} bg={'gray.700'} px={6}>
       <Image
         source={BackgroundImage}
+        defaultSource={BackgroundImage}
         alt="Imagem de uma academia"
         resizeMode="contain"
         position="absolute"
@@ -92,7 +100,11 @@ export function SignIn() {
         <Text mb={4} color={'gray.100'} textAlign={'center'} fontSize={16}>
           Não tem uma conta?
         </Text>
-        <Button title="Crie agora" variant="secondary" />
+        <Button
+          onPress={handleGoSignUp}
+          title="Crie agora"
+          variant="secondary"
+        />
       </VStack>
     </VStack>
   )

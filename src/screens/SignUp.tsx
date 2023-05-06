@@ -15,14 +15,23 @@ import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { useState } from 'react'
 import { Button } from '@components/Button'
+import { AuthNavigatorRoutesProps } from '@routes/auth'
+import { useNavigation } from '@react-navigation/native'
 
 export function SignUp() {
   const [show, setShow] = useState(false)
+
+  const navigation = useNavigation<AuthNavigatorRoutesProps>()
+
+  function handleGoBack() {
+    navigation.goBack()
+  }
 
   return (
     <VStack flex={1} bg={'gray.700'} px={6}>
       <Image
         source={BackgroundImage}
+        defaultSource={BackgroundImage}
         alt="Imagem de uma academia"
         resizeMode="contain"
         position="absolute"
@@ -114,7 +123,11 @@ export function SignUp() {
       <Button title="Criar e acessar" />
 
       <VStack mt={'24'}>
-        <Button title="Voltar para login" variant="secondary" />
+        <Button
+          onPress={handleGoBack}
+          title="Voltar para login"
+          variant="secondary"
+        />
       </VStack>
     </VStack>
   )
