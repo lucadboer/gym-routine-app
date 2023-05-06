@@ -16,7 +16,7 @@ import { Input } from '@components/Input'
 import { useState } from 'react'
 import { Button } from '@components/Button'
 
-export function SignIn() {
+export function SignUp() {
   const [show, setShow] = useState(false)
 
   return (
@@ -34,14 +34,13 @@ export function SignIn() {
       </Center>
 
       <Heading
-        mt={20}
         mb={8}
         fontWeight={'bold'}
         fontSize={'xl'}
         color={'white'}
         textAlign={'center'}
       >
-        Acesse sua conta
+        Crie a sua conta
       </Heading>
 
       <Center>
@@ -84,15 +83,38 @@ export function SignIn() {
           secureTextEntry={!show}
           autoCapitalize="none"
         />
+        <Input
+          placeholder="Confirme sua senha"
+          InputLeftElement={
+            <Icon
+              as={<MaterialCommunityIcons name="lock-outline" />}
+              ml={4}
+              color={'white'}
+              size={5}
+            />
+          }
+          InputRightElement={
+            <Pressable onPress={() => setShow(!show)}>
+              <Icon
+                as={
+                  <MaterialCommunityIcons
+                    name={show ? 'eye-outline' : 'eye-off-outline'}
+                  />
+                }
+                size={5}
+                mr={2}
+              />
+            </Pressable>
+          }
+          secureTextEntry={!show}
+          autoCapitalize="none"
+        />
       </Center>
 
-      <Button title="Acesse agora" />
+      <Button title="Criar e acessar" />
 
-      <VStack mt={'16'}>
-        <Text mb={4} color={'gray.100'} textAlign={'center'} fontSize={16}>
-          Não tem uma conta?
-        </Text>
-        <Button title="Crie agora" variant="secondary" />
+      <VStack mt={'24'}>
+        <Button title="Voltar para login" variant="secondary" />
       </VStack>
     </VStack>
   )
