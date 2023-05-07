@@ -16,7 +16,7 @@ import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
 import { useState } from 'react'
 import { Button } from '@components/Button'
-import { AuthNavigatorRoutesProps } from '@routes/auth'
+import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 
 export function SignIn() {
   const [show, setShow] = useState(false)
