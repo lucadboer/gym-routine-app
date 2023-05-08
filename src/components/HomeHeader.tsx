@@ -1,4 +1,4 @@
-import { HStack, Heading, Pressable, Text, VStack } from 'native-base'
+import { HStack, Heading, Text, VStack } from 'native-base'
 
 import LogOut from '@assets/logout.svg'
 import { UserPhoto } from './UserPhoto'
@@ -6,9 +6,9 @@ import { TouchableOpacity } from 'react-native'
 
 export function HomeHeader() {
   return (
-    <HStack bg={'gray.600'} px={8} pt={16} pb={4} alignItems={'center'}>
+    <HStack bg={'gray.600'} px={6} pt={16} pb={4} alignItems={'center'}>
       <UserPhoto size={16} />
-      <VStack ml={4}>
+      <VStack ml={4} flex={1}>
         <Text fontSize={'lg'} color={'gray.100'}>
           Olá
         </Text>
@@ -17,11 +17,7 @@ export function HomeHeader() {
         </Heading>
       </VStack>
 
-      <TouchableOpacity
-        style={{
-          marginLeft: 60,
-        }}
-      >
+      <TouchableOpacity>
         <LogOut />
       </TouchableOpacity>
     </HStack>
