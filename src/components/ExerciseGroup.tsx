@@ -14,7 +14,7 @@ export function ExerciseGroup({
     <Pressable
       bg={'gray.600'}
       w={24}
-      h={'12'}
+      h={12}
       mr={2}
       borderWidth={1}
       borderColor={isActive ? 'green.500' : 'gray.700'}

@@ -1,13 +1,22 @@
 import { ExerciseCard } from '@components/ExerciseCard'
 import { ExerciseGroup } from '@components/ExerciseGroup'
 import { HomeHeader } from '@components/HomeHeader'
-import { FlatList, HStack, Heading, Text, VStack } from 'native-base'
+import { FlatList, HStack, Heading, Text, VStack, View } from 'native-base'
 import { useState } from 'react'
+import { Platform } from 'react-native'
 
 export function Home() {
   const [groupSelected, setGroupSelected] = useState('')
-
-  const [group, setGroup] = useState<string[]>([
+  const [exercises, setExercices] = useState([
+    'Puxada Frontal',
+    'Remada Curvada',
+    'Remada Unilateral',
+    'Levantamento Terra',
+    'Peckdeck Invertido',
+    'aaa',
+    'aaaa',
+  ])
+  const [groups, setGroup] = useState<string[]>([
     'COSTAS',
     'BÍCEPS',
     'TRÍCEPS',
@@ -15,38 +24,51 @@ export function Home() {
     'PERNA',
     'OMBRO',
   ])
-
   return (
     <VStack flex={1}>
       <HomeHeader />
 
       <FlatList
-        data={group}
+        flex={2}
+        data={groups}
         keyExtractor={(item) => item}
         renderItem={({ item }) => (
           <ExerciseGroup
-            onPress={() => setGroupSelected(item)}
             title={item}
             isActive={groupSelected === item}
+            onPress={() => setGroupSelected(item)}
           />
         )}
         horizontal
         showsHorizontalScrollIndicator={false}
-        my={8}
-        maxH={12}
         _contentContainerStyle={{
           px: 8,
         }}
+        my={10}
+        maxH={10}
       />
 
-      <HStack mb={3} px={8} justifyContent={'space-between'}>
-        <Heading fontSize={'md'} color={'gray.100'}>
-          Exercícios
-        </Heading>
-        <Text color={'gray.200'}>4</Text>
-      </HStack>
+      <VStack px={8}>
+        <HStack justifyContent="space-between" mb={5}>
+          <Heading color="gray.200" fontSize="md">
+            Exercícios
+          </Heading>
 
-      <ExerciseCard />
+          <Text color="gray.200" fontSize="sm">
+            {exercises.length}
+          </Text>
+        </HStack>
+
+        <FlatList
+          data={exercises}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => <ExerciseCard title={item} />}
+          showsVerticalScrollIndicator={false}
+          _contentContainerStyle={{
+            paddingBottom: Platform.OS === 'ios' ? 20 : 80,
+          }}
+        />
+      </VStack>
     </VStack>
   )
 }
