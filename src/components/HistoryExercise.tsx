@@ -21,8 +21,8 @@ export function HistoryExercise({
       justifyContent={'space-between'}
       borderRadius={'lg'}
     >
-      <VStack>
-        <Heading fontSize={'lg'} color={'white'}>
+      <VStack flex={1}>
+        <Heading fontSize={'lg'} color={'white'} numberOfLines={1}>
           {muscle}
         </Heading>
         <Text mt={1} fontSize={'lg'} color={'gray.100'}>

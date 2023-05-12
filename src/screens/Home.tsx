@@ -1,7 +1,9 @@
 import { ExerciseCard } from '@components/ExerciseCard'
 import { ExerciseGroup } from '@components/ExerciseGroup'
 import { HomeHeader } from '@components/HomeHeader'
-import { FlatList, HStack, Heading, Text, VStack, View } from 'native-base'
+import { useNavigation } from '@react-navigation/native'
+import { AppNavigatorRoutesProps } from '@routes/app.routes'
+import { FlatList, HStack, Heading, Text, VStack } from 'native-base'
 import { useState } from 'react'
 import { Platform } from 'react-native'
 
@@ -24,6 +26,12 @@ export function Home() {
     'PERNA',
     'OMBRO',
   ])
+
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
+
+  function handleOpenExerciseDetails() {
+    navigation.navigate('exercise')
+  }
   return (
     <VStack flex={1}>
       <HomeHeader />
@@ -44,8 +52,9 @@ export function Home() {
         _contentContainerStyle={{
           px: 8,
         }}
-        my={10}
-        maxH={10}
+        my={8}
+        maxH={12}
+        minH={12}
       />
 
       <VStack px={8}>
@@ -62,7 +71,9 @@ export function Home() {
         <FlatList
           data={exercises}
           keyExtractor={(item) => item}
-          renderItem={({ item }) => <ExerciseCard title={item} />}
+          renderItem={({ item }) => (
+            <ExerciseCard title={item} onPress={handleOpenExerciseDetails} />
+          )}
           showsVerticalScrollIndicator={false}
           _contentContainerStyle={{
             paddingBottom: Platform.OS === 'ios' ? 20 : 80,

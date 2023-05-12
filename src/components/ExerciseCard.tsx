@@ -19,11 +19,7 @@ export function ExerciseCard({ title, ...rest }: ExerciseCardProps) {
         bg={'gray.500'}
         rounded={8}
       >
-        <Image
-          source={Exercise}
-          alt="Imagem do exercício"
-          resizeMode="contain"
-        />
+        <Image source={Exercise} alt="Imagem do exercício" resizeMode="cover" />
         <VStack flex={1} ml={4}>
           <Heading fontSize={'lg'} color={'white'}>
             {title}

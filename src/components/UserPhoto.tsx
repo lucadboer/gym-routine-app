@@ -13,6 +13,8 @@ export function UserPhoto({ size, ...rest }: UserPhotoProps) {
       w={size}
       h={size}
       alt="imagem de perfil"
+      borderWidth={2}
+      borderColor={'gray.400'}
       rounded={'full'}
       {...rest}
     />

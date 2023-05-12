@@ -13,14 +13,12 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import BackgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
-import { useState } from 'react'
 import { Button } from '@components/Button'
 import { AuthNavigatorRoutesProps } from '@routes/auth'
 import { useNavigation } from '@react-navigation/native'
+import { InputPassword } from '@components/InputPassword'
 
 export function SignUp() {
-  const [show, setShow] = useState(false)
-
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
   function handleGoBack() {
@@ -66,58 +64,8 @@ export function SignUp() {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-        <Input
-          placeholder="Digite sua senha"
-          InputLeftElement={
-            <Icon
-              as={<MaterialCommunityIcons name="lock-outline" />}
-              ml={4}
-              color={'white'}
-              size={5}
-            />
-          }
-          InputRightElement={
-            <Pressable onPress={() => setShow(!show)}>
-              <Icon
-                as={
-                  <MaterialCommunityIcons
-                    name={show ? 'eye-outline' : 'eye-off-outline'}
-                  />
-                }
-                size={5}
-                mr={2}
-              />
-            </Pressable>
-          }
-          secureTextEntry={!show}
-          autoCapitalize="none"
-        />
-        <Input
-          placeholder="Confirme sua senha"
-          InputLeftElement={
-            <Icon
-              as={<MaterialCommunityIcons name="lock-outline" />}
-              ml={4}
-              color={'white'}
-              size={5}
-            />
-          }
-          InputRightElement={
-            <Pressable onPress={() => setShow(!show)}>
-              <Icon
-                as={
-                  <MaterialCommunityIcons
-                    name={show ? 'eye-outline' : 'eye-off-outline'}
-                  />
-                }
-                size={5}
-                mr={2}
-              />
-            </Pressable>
-          }
-          secureTextEntry={!show}
-          autoCapitalize="none"
-        />
+        <InputPassword placeholder="Digite sua senha" />
+        <InputPassword placeholder="Confirme sua senha" />
       </Center>
 
       <Button title="Criar e acessar" />
