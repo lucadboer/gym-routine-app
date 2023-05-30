@@ -19,6 +19,7 @@ export function Auth() {
     <Navigator
       screenOptions={{
         headerShown: false,
+        animation: 'slide_from_right',
       }}
     >
       <Screen name="signIn" component={SignIn} />

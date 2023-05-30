@@ -42,7 +42,7 @@ export function SignIn() {
       </Center>
 
       <Heading
-        mt={20}
+        mt={16}
         mb={8}
         fontWeight={'bold'}
         fontSize={'xl'}

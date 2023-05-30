@@ -1,9 +1,9 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { IInputProps, Icon, Pressable } from 'native-base'
+import { Icon, Pressable } from 'native-base'
 import { useState } from 'react'
-import { Input } from './Input'
+import { Input, InputProps } from './Input'
 
-interface InputPasswordProps extends IInputProps {}
+interface InputPasswordProps extends InputProps {}
 
 export function InputPassword({ ...rest }: InputPasswordProps) {
   const [show, setShow] = useState(false)
