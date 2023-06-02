@@ -3,28 +3,73 @@ import {
   Heading,
   Icon,
   Image,
-  Pressable,
   Text,
   VStack,
+  useToast,
 } from 'native-base'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 
 import BackgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { Button } from '@components/Button'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
+import { Controller, useForm } from 'react-hook-form'
+import { InputPassword } from '@components/InputPassword'
+import { useAuth } from '@hooks/useAuth'
+import { AppError } from '@utils/AppError'
+
+interface SignInParams {
+  userEmail?: string
+}
+
+interface FormData {
+  email: string
+  password: string
+}
 
 export function SignIn() {
-  const [show, setShow] = useState(false)
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
+  const route = useRoute()
+  const { userEmail } = (route.params as SignInParams) || {}
+  const { signIn, user } = useAuth()
+  const toast = useToast()
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>()
+
+  async function handleSignIn({ email, password }: FormData) {
+    try {
+      await signIn(email, password)
+    } catch (error) {
+      const isAppError = error instanceof AppError
+      const title = isAppError
+        ? error.message
+        : 'Não foi possível acessar, tente novamente mais tarde.'
+      toast.show({
+        title,
+        placement: 'top',
+        bgColor: 'red.600',
+      })
+    }
+  }
 
   function handleGoSignUp() {
     navigation.navigate('signUp')
   }
+
+  useEffect(() => {
+    if (userEmail) {
+      setValue('email', userEmail)
+    }
+  }, [userEmail, setValue])
 
   return (
     <VStack flex={1} bg={'gray.700'} px={6}>
@@ -53,48 +98,46 @@ export function SignIn() {
       </Heading>
 
       <Center>
-        <Input
-          placeholder="Digite seu e-mail"
-          InputLeftElement={
-            <Icon
-              as={<MaterialCommunityIcons name="email-outline" />}
-              ml={4}
-              color={'white'}
-              size={5}
+        <Controller
+          name="email"
+          control={control}
+          rules={{ required: 'Informe um email' }}
+          render={({ field: { onChange, value } }) => (
+            <Input
+              placeholder="Digite seu e-mail"
+              onChangeText={onChange}
+              value={value}
+              InputLeftElement={
+                <Icon
+                  as={<MaterialCommunityIcons name="email-outline" />}
+                  ml={4}
+                  color={'white'}
+                  size={5}
+                />
+              }
+              keyboardType="email-address"
+              autoCapitalize="none"
+              errorMessage={errors.email?.message}
             />
-          }
-          keyboardType="email-address"
-          autoCapitalize="none"
+          )}
         />
-        <Input
-          placeholder="Digite sua senha"
-          InputLeftElement={
-            <Icon
-              as={<MaterialCommunityIcons name="lock-outline" />}
-              ml={4}
-              color={'white'}
-              size={5}
+
+        <Controller
+          name="password"
+          control={control}
+          rules={{ required: 'Informe uma senha' }}
+          render={({ field: { onChange, value } }) => (
+            <InputPassword
+              placeholder="Digite sua senha"
+              onChangeText={onChange}
+              value={value}
+              errorMessage={errors.password?.message}
             />
-          }
-          InputRightElement={
-            <Pressable onPress={() => setShow(!show)}>
-              <Icon
-                as={
-                  <MaterialCommunityIcons
-                    name={show ? 'eye-outline' : 'eye-off-outline'}
-                  />
-                }
-                size={5}
-                mr={2}
-              />
-            </Pressable>
-          }
-          secureTextEntry={!show}
-          autoCapitalize="none"
+          )}
         />
       </Center>
 
-      <Button title="Acesse agora" />
+      <Button onPress={handleSubmit(handleSignIn)} title="Acesse agora" />
 
       <VStack mt={'16'}>
         <Text mb={4} color={'gray.100'} textAlign={'center'} fontSize={16}>
