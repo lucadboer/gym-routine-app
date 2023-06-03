@@ -1,12 +1,4 @@
-import {
-  Center,
-  Heading,
-  Icon,
-  Image,
-  Text,
-  VStack,
-  useToast,
-} from 'native-base'
+import { Center, Heading, Icon, Image, Text, VStack } from 'native-base'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -20,7 +12,7 @@ import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { Controller, useForm } from 'react-hook-form'
 import { InputPassword } from '@components/InputPassword'
 import { useAuth } from '@hooks/useAuth'
-import { AppError } from '@utils/AppError'
+import { showMessageError } from '@utils/showMessageError'
 
 interface SignInParams {
   userEmail?: string
@@ -38,7 +30,6 @@ export function SignIn() {
   const route = useRoute()
   const { userEmail } = (route.params as SignInParams) || {}
   const { signIn } = useAuth()
-  const toast = useToast()
 
   const {
     control,
@@ -52,15 +43,7 @@ export function SignIn() {
       setIsLoading(true)
       await signIn(email, password)
     } catch (error) {
-      const isAppError = error instanceof AppError
-      const title = isAppError
-        ? error.message
-        : 'Não foi possível acessar, tente novamente mais tarde.'
-      toast.show({
-        title,
-        placement: 'top',
-        bgColor: 'red.600',
-      })
+      showMessageError(error as Error)
     } finally {
       setIsLoading(false)
     }

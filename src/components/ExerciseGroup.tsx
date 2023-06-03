@@ -26,7 +26,13 @@ export function ExerciseGroup({
       }}
       {...rest}
     >
-      <Text color={isActive ? 'green.500' : 'gray.200'}>{title}</Text>
+      <Text
+        textTransform="uppercase"
+        fontSize={12}
+        color={isActive ? 'green.500' : 'gray.200'}
+      >
+        {title}
+      </Text>
     </Pressable>
   )
 }

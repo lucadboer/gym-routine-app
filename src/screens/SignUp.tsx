@@ -22,8 +22,8 @@ import { InputPassword } from '@components/InputPassword'
 import { useForm, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AppError } from '@utils/AppError'
 import { api } from '@services/api'
+import { showMessageError } from '@utils/showMessageError'
 
 interface FormData {
   name: string
@@ -85,15 +85,7 @@ export function SignUp() {
         userEmail: email,
       })
     } catch (error) {
-      const isAppError = error instanceof AppError
-      const title = isAppError
-        ? error.message
-        : 'Não foi possível criar sua conta, tente novamente mais tarde.'
-      toast.show({
-        title,
-        placement: 'top',
-        bgColor: 'red.600',
-      })
+      showMessageError(error as Error)
     } finally {
       setIsLoading(false)
     }

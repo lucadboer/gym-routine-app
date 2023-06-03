@@ -38,14 +38,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await api.post('/sessions', { email, password })
 
-      const { userData, token } = data
+      const { user, token } = data
 
-      if (userData && token) {
+      if (user && token) {
         api.defaults.headers.common.Authorization = `Bearer ${token}`
 
         await storageTokenSave(token)
-        await storageUserSave(userData)
-        setUser(userData)
+        await storageUserSave(user)
+        setUser(user)
       }
     } catch (error) {
       throw error
