@@ -14,7 +14,7 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import BackgroundImage from '@assets/background.png'
 import LogoSvg from '@assets/logo.svg'
 import { Input } from '@components/Input'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@components/Button'
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 import { Controller, useForm } from 'react-hook-form'
@@ -32,10 +32,12 @@ interface FormData {
 }
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false)
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   const route = useRoute()
   const { userEmail } = (route.params as SignInParams) || {}
-  const { signIn, user } = useAuth()
+  const { signIn } = useAuth()
   const toast = useToast()
 
   const {
@@ -47,6 +49,7 @@ export function SignIn() {
 
   async function handleSignIn({ email, password }: FormData) {
     try {
+      setIsLoading(true)
       await signIn(email, password)
     } catch (error) {
       const isAppError = error instanceof AppError
@@ -58,6 +61,8 @@ export function SignIn() {
         placement: 'top',
         bgColor: 'red.600',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -137,7 +142,11 @@ export function SignIn() {
         />
       </Center>
 
-      <Button onPress={handleSubmit(handleSignIn)} title="Acesse agora" />
+      <Button
+        onPress={handleSubmit(handleSignIn)}
+        title="Acesse agora"
+        isLoading={isLoading}
+      />
 
       <VStack mt={'16'}>
         <Text mb={4} color={'gray.100'} textAlign={'center'} fontSize={16}>

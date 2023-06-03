@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Center,
   Heading,
@@ -51,6 +52,8 @@ const signUpSchema = z.object({
 })
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false)
+
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
   const {
     control,
@@ -69,6 +72,7 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: FormData) {
     try {
+      setIsLoading(true)
       await api.post('/users', { name, email, password })
 
       toast.show({
@@ -90,6 +94,8 @@ export function SignUp() {
         placement: 'top',
         bgColor: 'red.600',
       })
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -200,7 +206,11 @@ export function SignUp() {
           />
         </Center>
 
-        <Button onPress={handleSubmit(handleSignUp)} title="Criar e acessar" />
+        <Button
+          onPress={handleSubmit(handleSignUp)}
+          title="Criar"
+          isLoading={isLoading}
+        />
 
         <VStack mt={'12'}>
           <Button
