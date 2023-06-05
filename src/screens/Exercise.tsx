@@ -16,33 +16,55 @@ import { TouchableOpacity } from 'react-native'
 import BodySvg from '@assets/body.svg'
 import Series from '@assets/series.svg'
 import Repetitons from '@assets/repetitions.svg'
-import ExercisePng from '@assets/exercise-large.png'
 import { Button } from '@components/Button'
 import { api } from '@services/api'
 import { useEffect, useState } from 'react'
 import { ExerciseDTO } from '@dtos/Exercise'
+import { Loading } from '@components/Loading'
+import { showMessageError } from '@utils/showMessageError'
+import { AppNavigatorRoutesProps } from '@routes/app.routes'
+import { showMessageSuccess } from '@utils/showMessageSuccess'
 
 interface ExerciseParamsProps {
   exerciseId: string
 }
 
 export function Exercise() {
+  const [isSending, setIsSending] = useState(false)
   const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const navigation = useNavigation()
+  const navigation = useNavigation<AppNavigatorRoutesProps>()
   const route = useRoute()
   const { exerciseId } = route.params as ExerciseParamsProps
 
   async function getExerciseById() {
     try {
+      setIsLoading(true)
       const { data } = await api.get(`/exercises/${exerciseId}`)
       setExercise(data)
     } catch (error) {
       console.error(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  console.log(exercise)
+  async function handleRegisterExercise(exerciseId: string) {
+    try {
+      setIsSending(true)
+      await api.post('history', { exercise_id: exerciseId })
+
+      showMessageSuccess(
+        `${exercise.group} cada vez mais forte, continue assim!`,
+      )
+      navigation.navigate('history')
+    } catch (error) {
+      showMessageError(error as Error)
+    } finally {
+      setIsSending(false)
+    }
+  }
 
   function handleGoBack() {
     navigation.goBack()
@@ -76,9 +98,11 @@ export function Exercise() {
         </HStack>
       </VStack>
 
-      <ScrollView contentContainerStyle={{ paddingBottom: 26 }}>
-        <Box px={8} mt={12}>
-          {exercise.demo && (
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <ScrollView contentContainerStyle={{ paddingBottom: 26 }}>
+          <Box px={8} mt={12}>
             <Image
               w="full"
               h={80}
@@ -90,27 +114,33 @@ export function Exercise() {
               resizeMode="cover"
               rounded="lg"
             />
-          )}
 
-          <Center mt={8} bg={'gray.600'} p={4} rounded={'lg'}>
-            <HStack>
-              <HStack alignItems={'center'}>
-                <Icon as={Series} />
-                <Text ml={2} color={'gray.200'}>
-                  {exercise.series} séries
-                </Text>
+            <Center mt={8} bg={'gray.600'} p={4} rounded={'lg'}>
+              <HStack>
+                <HStack alignItems={'center'}>
+                  <Icon as={Series} />
+                  <Text ml={2} color={'gray.200'}>
+                    {exercise.series} séries
+                  </Text>
+                </HStack>
+                <HStack ml={10} alignItems={'center'}>
+                  <Icon as={Repetitons} />
+                  <Text ml={2} color={'gray.200'}>
+                    {exercise.repetitions} repetições
+                  </Text>
+                </HStack>
               </HStack>
-              <HStack ml={10} alignItems={'center'}>
-                <Icon as={Repetitons} />
-                <Text ml={2} color={'gray.200'}>
-                  {exercise.repetitions} repetições
-                </Text>
-              </HStack>
-            </HStack>
-            <Button mt={6} title="Marcar como concluída" w={'full'} />
-          </Center>
-        </Box>
-      </ScrollView>
+              <Button
+                onPress={() => handleRegisterExercise(exercise.id)}
+                isLoading={isSending}
+                mt={6}
+                title="Marcar como concluída"
+                w={'full'}
+              />
+            </Center>
+          </Box>
+        </ScrollView>
+      )}
     </VStack>
   )
 }
