@@ -32,7 +32,7 @@ interface FormData {
   password_confirm: string
 }
 
-const VALID_PASSWORD_REGEX = /^(?=.*[a-zA-Z]).+$/
+export const VALID_PASSWORD_REGEX = /^(?=.*[a-zA-Z]).+$/
 
 const signUpSchema = z.object({
   name: z

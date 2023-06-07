@@ -12,7 +12,7 @@ import { Platform } from 'react-native'
 
 export function Home() {
   const [isLoading, setIsLoading] = useState(false)
-  const [groupSelected, setGroupSelected] = useState('')
+  const [groupSelected, setGroupSelected] = useState('antebraço')
   const [exercises, setExercices] = useState<ExerciseDTO[]>([])
   const [groups, setGroups] = useState<string[]>([])
 
@@ -24,7 +24,6 @@ export function Home() {
 
   async function fetchGroups() {
     const { data } = await api.get('groups')
-    console.log(data)
 
     setGroups(data)
   }

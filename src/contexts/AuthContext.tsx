@@ -17,6 +17,7 @@ interface AuthContextDataProps {
   user: UserDTO
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  userUpdateProfile: (userUpdated: UserDTO) => Promise<void>
   isLoadingUserDataStorage: boolean
 }
 
@@ -33,6 +34,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   const [isLoadingUserDataStorage, setIsLoadingUserDataStorage] =
     useState(false)
+
+  async function userUpdateProfile(userUpdated: UserDTO) {
+    try {
+      setUser(userUpdated)
+      await storageUserSave(userUpdated)
+    } catch (error) {
+      throw error
+    }
+  }
 
   async function signIn(email: string, password: string) {
     try {
@@ -87,7 +97,13 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ signIn, user, isLoadingUserDataStorage, signOut }}
+      value={{
+        signIn,
+        user,
+        isLoadingUserDataStorage,
+        signOut,
+        userUpdateProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>
