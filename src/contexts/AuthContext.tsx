@@ -35,10 +35,28 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const [isLoadingUserDataStorage, setIsLoadingUserDataStorage] =
     useState(false)
 
+  async function userAndTokenUpdate(userData: UserDTO, token: string) {
+    api.defaults.headers.common.Authorization = `Bearer ${token}`
+
+    setUser(userData)
+  }
+
+  async function storageUserAndTokenSave(userData: UserDTO, token: string) {
+    try {
+      setIsLoadingUserDataStorage(true)
+      await storageUserSave(userData)
+      await storageTokenSave(token)
+    } catch (error) {
+      throw error
+    } finally {
+      setIsLoadingUserDataStorage(false)
+    }
+  }
+
   async function userUpdateProfile(userUpdated: UserDTO) {
     try {
-      setUser(userUpdated)
       await storageUserSave(userUpdated)
+      setUser(userUpdated)
     } catch (error) {
       throw error
     }
@@ -53,9 +71,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (user && token) {
         api.defaults.headers.common.Authorization = `Bearer ${token}`
 
-        await storageTokenSave(token)
-        await storageUserSave(user)
-        setUser(user)
+        await storageUserAndTokenSave(user, token)
+        userAndTokenUpdate(data.user, data.token)
       }
     } catch (error) {
       throw error
@@ -82,7 +99,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const token = await storageTokenGet()
 
       if (userLogged && token) {
-        setUser(userLogged)
+        userAndTokenUpdate(userLogged, token)
       }
     } catch (error) {
       throw error

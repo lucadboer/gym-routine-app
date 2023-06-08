@@ -56,7 +56,7 @@ const updateProfileSchema = z.object({
 })
 
 export function Profile() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
   const [photoIsLoading, setPhotoIsLoading] = useState(false)
 
   const toast = useToast()
@@ -130,7 +130,7 @@ export function Profile() {
         )
 
         const userUpdated = user
-        userUpdated.avatarUrl = avatarResponse.data.avatar
+        userUpdated.avatar = avatarResponse.data.avatar
         userUpdateProfile(userUpdated)
 
         showMessageSuccess('Foto alterada!')
@@ -142,20 +142,19 @@ export function Profile() {
     }
   }
 
-  console.log(user.avatarUrl)
-
   async function handleUpdateProfile(data: FormData) {
     try {
+      setIsUpdating(true)
       const userUpdated = user
       userUpdated.name = data.name
 
       await api.put('users', data)
-      await userUpdateProfile(data)
+      await userUpdateProfile(userUpdated)
       showMessageSuccess('Perfil atualizado com sucesso')
     } catch (error) {
       showMessageError(error as Error)
     } finally {
-      setIsLoading(false)
+      setIsUpdating(false)
     }
   }
 
@@ -180,8 +179,8 @@ export function Profile() {
           ) : (
             <UserPhoto
               source={
-                user.avatarUrl
-                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatarUrl}` }
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
                   : UserPhotoDefault
               }
               size={PHOTO_SIZE}
@@ -253,7 +252,7 @@ export function Profile() {
               onPress={handleSubmit(handleUpdateProfile)}
               mb={6}
               title="Atualizar"
-              isLoading={isLoading}
+              isLoading={isUpdating}
             />
           </VStack>
         </VStack>

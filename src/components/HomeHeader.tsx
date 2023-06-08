@@ -9,14 +9,13 @@ import { api } from '@services/api'
 
 export function HomeHeader() {
   const { user, signOut } = useAuth()
-
   return (
     <HStack bg={'gray.600'} px={6} pt={16} pb={4} alignItems={'center'}>
       <UserPhoto
         size={16}
         source={
-          user.avatarUrl
-            ? { uri: `${api.defaults.baseURL}/avatar/${user.avatarUrl}` }
+          user.avatar
+            ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
             : defaulUserPhotoImg
         }
       />
