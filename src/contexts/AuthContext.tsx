@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-useless-catch */
 import { UserDTO } from '@dtos/User'
 import { api } from '@services/api'
@@ -41,11 +42,15 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     setUser(userData)
   }
 
-  async function storageUserAndTokenSave(userData: UserDTO, token: string) {
+  async function storageUserAndTokenSave(
+    userData: UserDTO,
+    token: string,
+    refresh_token: string,
+  ) {
     try {
       setIsLoadingUserDataStorage(true)
       await storageUserSave(userData)
-      await storageTokenSave(token)
+      await storageTokenSave({ token, refresh_token })
     } catch (error) {
       throw error
     } finally {
@@ -66,12 +71,12 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await api.post('/sessions', { email, password })
 
-      const { user, token } = data
+      const { user, token, refresh_token } = data
 
-      if (user && token) {
+      if (user && token && refresh_token) {
         api.defaults.headers.common.Authorization = `Bearer ${token}`
 
-        await storageUserAndTokenSave(user, token)
+        await storageUserAndTokenSave(user, token, refresh_token)
         userAndTokenUpdate(data.user, data.token)
       }
     } catch (error) {
@@ -96,7 +101,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       setIsLoadingUserDataStorage(true)
       const userLogged = await storageUserGet()
-      const token = await storageTokenGet()
+      const { token } = await storageTokenGet()
 
       if (userLogged && token) {
         userAndTokenUpdate(userLogged, token)
@@ -111,6 +116,14 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   useEffect(() => {
     loadUserData()
   }, [])
+
+  useEffect(() => {
+    const subscribe = api.registerInterceptTokenManager(signOut)
+
+    return () => {
+      subscribe()
+    }
+  }, [signOut])
 
   return (
     <AuthContext.Provider
